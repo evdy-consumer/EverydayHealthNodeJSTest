@@ -1,0 +1,36 @@
+version: '3.9'
+
+services:
+  api:
+    container_name: everyday-health-api
+    build: .
+    ports: 
+      - ${SERVER_PORT}:${SERVER_PORT}
+    volumes:
+      - .:/usr/src/app
+      - /usr/src/app/node_modules
+    command: yarn run start:dev
+    restart: always
+    env_file:
+      - .env
+    # environment:
+    #   - MONGO_URI=mongodb://mongodb:27017
+    #   - DB_USER=root
+    #   - DB_PASSWORD=example
+    #   - DB_NAME=houses
+    #   - MONGO_URI=mongodb://mongodb:27017/houses
+    depends_on:
+      - mongodb
+
+  mongodb:
+    container_name: everyday-health-mongodb
+    image: mongo
+    restart: always
+    ports:
+      - ${DB_PORT}:${DB_PORT}
+    env_file:
+      - .env
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${DB_USER}
+      MONGO_INITDB_ROOT_PASSWORD: ${DB_PASSWORD}
+
